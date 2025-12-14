@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  telegram-rpg-bot:
+    build: .
+    container_name: telegram_rpg_bot
+    volumes:
+      - .:/app
+      - bot_data:/app/data
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN:-YOUR_BOT_TOKEN_HERE}
+    restart: unless-stopped
+    depends_on:
+      - redis
+    networks:
+      - bot_network
+
+  redis:
+    image: redis:alpine
+    container_name: bot_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - bot_network
+
+volumes:
+  bot_data:
+  redis_data:
+
+networks:
+  bot_network:
+    driver: bridge
